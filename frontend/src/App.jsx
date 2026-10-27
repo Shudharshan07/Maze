@@ -1,17 +1,26 @@
-import { useEffect, useState } from 'react'
-import GetMaze from '../src/api/data'
-import './App.css'
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import './App.css';
+import View2D from './components/View2D';
+import View3D from './components/View3D';
+import GetMaze from './api/data';
+
 
 function App() {
 
 	const [width, setWidth] = useState(39)
 	const [height, setHeight] = useState(39)
-	const [maze, setMaze] = useState({ Board: [] })
+	const [maze, setMaze] = useState(null)
+	const [is3D, setIs3D] = useState(false);
 
-	const handleGenerate = async () => {
-		const NewMaze = await GetMaze(Number(width), Number(height))
-		setMaze(NewMaze)
-	}	
+	const handleGenerate = async () => {		
+		try {
+			const NewMaze = await GetMaze(Number(width), Number(height))
+			setMaze(NewMaze)
+		} catch (error) {
+			console.error("Failed to fetch maze data:", error);
+		}
+	};	
 
 	useEffect(() => {
 		const handleClose = () => {
@@ -24,12 +33,22 @@ function App() {
 			window.removeEventListener('pagehide', handleClose)
 		};
 	}, []);
-  
+
+	const hasMazeData = maze && (Array.isArray(maze) ? maze.length > 0 : maze.Board?.length > 0);
+
   return (
     <>
 	<div className='app'>
 		<div className='maze-container'>
-		<div className='maze-grid'>
+			{
+				hasMazeData ? (
+					is3D ? <View3D maze={maze} /> : <View2D maze={maze} />
+				) : (
+				<div style={{ color: '#ef4444', fontWeight: 'bold' }}>No map loaded.</div>
+				)
+			}
+
+		{/* <div className='maze-grid'>
 			{
 				maze?.Board.map((row, rowIndex) => (
 					<div key={rowIndex} className="maze-row">
@@ -44,9 +63,27 @@ function App() {
 					</div>
 				))
 			}
-		</div>
+		</div> */}
 		</div>
 		<div className='panel'>
+			<div className="input-group">
+			<label>View Mode</label>
+			<div className="switch-container">
+				<span className={`switch-label ${!is3D ? 'active' : ''}`}>2D</span>
+				
+				<label className="switch">
+				<input 
+					type="checkbox" 
+					checked={is3D} 
+					onChange={() => setIs3D(!is3D)} 
+				/>
+				<span className="slider"></span>
+				</label>
+				
+				<span className={`switch-label ${is3D ? 'active' : ''}`}>3D</span>
+			</div>
+			</div>
+
 			<div className='input-group'>
 				<label htmlFor="width">Width</label>
 				<input 

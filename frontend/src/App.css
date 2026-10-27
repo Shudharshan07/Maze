@@ -22,11 +22,19 @@ body {
     background-color: #000000; 
     border-radius: 12px;
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15);
+
+    width: 80vh;  
+    height: 80vh;
+
     max-height: 85vh;
     max-width: 60vw;
+
+    aspect-ratio: 1 / 1;
+    
     display: flex;
     justify-content: center;
     align-items: center;
+    box-sizing: border-box;
 }
 
 .maze-grid {
@@ -124,4 +132,81 @@ body {
 
 .generate-btn:active {
     transform: scale(0.98);
+}
+
+
+/* Container to align text labels and the switch horizontally */
+.switch-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 6px 0;
+}
+
+.switch-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #64748b; /* Muted gray for inactive mode */
+    transition: color 0.2s ease;
+}
+
+.switch-label.active {
+    color: #2563eb; /* Pop of blue for active mode */
+}
+
+/* The actual switch hitboxes and wrapper */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 26px;
+}
+
+/* Hide native HTML checkbox */
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* The slider background track */
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #cbd5e1; /* Light gray track for 2D */
+    transition: .3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 34px;
+}
+
+/* The circular thumb inside the switch */
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+/* Track color shift when 3D is active */
+input:checked + .slider {
+    background-color: #2563eb; /* Blue track for 3D */
+}
+
+/* Move the circular thumb over smoothly when checked */
+input:checked + .slider:before {
+    transform: translateX(24px);
+}
+
+/* Subtle focus state for accessibility */
+input:focus + .slider {
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
 }
